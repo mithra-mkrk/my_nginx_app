@@ -1,0 +1,29 @@
+FROM nginx:latest
+
+LABEL maintainer="Your Name <mithra.muppi@g.com>" \
+      version="1.0" \
+      description="A simple Nginx web server for Dockerfile learning."
+
+ENV MY_APP_PORT=80
+ENV NGINX_ROOT=/usr/share/nginx/html
+
+RUN apt-get update && \
+    apt-get install -y curl procps && \
+    rm -rf /var/lib/apt/lists/*
+
+WORKDIR ${NGINX_ROOT}
+
+COPY index.html .
+RUN chown -R daemon:daemon /var/cache/nginx
+ADD nginx.conf /etc/nginx/nginx.conf
+
+EXPOSE ${MY_APP_PORT}
+
+USER daemon
+
+ARG BUILD_DATE="Not specified"
+LABEL build_date="${BUILD_DATE}"
+
+
+
+CMD ["nginx", "-g", "daemon off;"]
